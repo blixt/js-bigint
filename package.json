@@ -13,6 +13,10 @@
     "url": "https://github.com/blixt/js-bigint.git"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vows test/* --spec"
+  },
+  "devDependencies": {
+    "assert": "^1.1.1",
+    "vows": "~0.7.0"
   }
 }

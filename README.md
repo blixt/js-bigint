@@ -10,6 +10,8 @@ same thing.
 ***Note:*** This is still a very early version and a lot of operations
 are missing.
 
+[![Build Status](https://api.travis-ci.org/blixt/js-bigint.png?branch=master)](https://travis-ci.org/blixt/js-bigint)
+
 
 Example
 -------
