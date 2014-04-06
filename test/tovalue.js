@@ -9,6 +9,18 @@ vows.describe('tovalue').addBatch({
 
     'has the correct value': function (big) {
       assert.strictEqual(big + 0, 4503599627370495);
+    },
+
+    'that is negative': {
+      topic: function () {
+        var big = new BigInt([15, 255, 255, 255, 255, 255, 255]);
+        big.negate();
+        return big;
+      },
+
+      'has the correct value': function (big) {
+        assert.strictEqual(big + 0, -4503599627370495);
+      }
     }
   }
 }).export(module);
