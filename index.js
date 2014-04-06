@@ -1,10 +1,11 @@
+var arrayCopy = require('./lib/arraycopy');
+
 module.exports = BigInt;
 
 
 // Constants for a 16-bit backing store.
 var BITS = 15,
     BASE = 1 << BITS,
-    MASK = BASE - 1,
     DECIMAL_SHIFT = 4,
     DECIMAL_BASE = 10000;
 
@@ -33,47 +34,7 @@ function BigInt(opt_value, opt_bitsPerItem) {
     digits = new Uint16Array(opt_value.digits);
     this.negative = opt_value.negative;
   } else if (Array.isArray(opt_value)) {
-    var numItems = opt_value.length;
-
-    if (!opt_bitsPerItem) opt_bitsPerItem = 8;
-    if (opt_bitsPerItem < 1 || opt_bitsPerItem > 32) {
-      throw new Error('Bits per item must be in range 1–32');
-    }
-
-    var totalBits = numItems * opt_bitsPerItem;
-
-    digits = new Uint16Array(Math.ceil(totalBits / BITS));
-
-    var index = 0,
-        bits = totalBits % BITS || BITS;
-
-    for (var i = 0; i < numItems; i++) {
-      var value = opt_value[i];
-
-      var overflow = opt_bitsPerItem - bits;
-
-      if (overflow < 0) {
-        digits[index] |= value << -overflow >>> 0 & MASK;
-      } else {
-        digits[index] |= value >>> overflow & MASK;
-      }
-
-      while (overflow > 0) {
-        index++;
-
-        if (overflow < BITS) {
-          digits[index] = value << (BITS - overflow) >>> 0 & MASK;
-        } else {
-          digits[index] = value >>> (overflow - BITS) & MASK;
-        }
-
-        overflow -= BITS;
-      }
-
-      bits -= opt_bitsPerItem;
-      while (bits < 0) bits += BITS;
-    }
-
+    digits = arrayCopy(opt_value, opt_bitsPerItem || 8, BITS);
     this.negative = false;
   }
 
@@ -109,6 +70,10 @@ BigInt.prototype.shiftRight = function (bits) {
 
   delete this.value;
   return carry;
+};
+
+BigInt.prototype.toBytes = function (opt_destArray) {
+  return arrayCopy(this.digits, BITS, 8, opt_destArray);
 };
 
 BigInt.prototype.toJSON = function () {
