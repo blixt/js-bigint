@@ -3,7 +3,7 @@ var assert = require('assert'),
 
 var BigInt = require('../');
 
-vows.describe('Creating BigInt').addBatch({
+vows.describe('creating').addBatch({
   'from a JavaScript number': {
     topic: new BigInt(0xABCDEF0ABCDEF),
 

@@ -3,7 +3,7 @@ var assert = require('assert'),
 
 var BigInt = require('../');
 
-vows.describe('BigInt#toValue').addBatch({
+vows.describe('tovalue').addBatch({
   'for a number just under 53 bits': {
     topic: new BigInt([15, 255, 255, 255, 255, 255, 255]),
 
