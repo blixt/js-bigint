@@ -1,4 +1,4 @@
-BigInt
+BigInt [![Build Status Image][]][Build Status]
 ======
 
 Enables working with integers beyond 53 bits (the upper limit of what
@@ -9,8 +9,6 @@ same thing.
 
 ***Note:*** This is still a very early version and a lot of operations
 are missing.
-
-[![Build Status](https://api.travis-ci.org/blixt/js-bigint.png?branch=master)](https://travis-ci.org/blixt/js-bigint)
 
 
 Example
@@ -47,4 +45,6 @@ supports CommonJS modules (for example: [Browserify][]).
 
 
 [Browserify]: http://browserify.org/
+[Build Status]: https://travis-ci.org/blixt/js-bigint
+[Build Status Image]: https://api.travis-ci.org/blixt/js-bigint.png?branch=master
 [NPM]: https://www.npmjs.org/
