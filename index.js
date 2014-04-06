@@ -13,9 +13,14 @@ var BITS = 15,
 /**
  * Represent integers of any size.
  *
- * Takes the following inputs:
+ * The constructor takes one of the following inputs:
  *
  * - Another BigInt (this will create a copy)
+ *
+ * - A string of the number, optionally with a radix as the second argument
+ *
+ * - A JavaScript number (note that JavaScript can only accurately represent 53
+ *   bits in a number, so use a string if you need bigger numbers)
  *
  * - An array of binary values to build the number from
  *
@@ -27,14 +32,31 @@ var BITS = 15,
  *       var int = new BigInt([1, 0], 32); // one above max 32-bit number.
  *
  */
-function BigInt(opt_value, opt_bitsPerItem) {
+function BigInt(opt_value, opt_extra) {
   var digits;
 
   if (opt_value instanceof BigInt) {
     digits = new Uint16Array(opt_value.digits);
     this.negative = opt_value.negative;
+  } else if (typeof opt_value == 'number') {
+    if (opt_value < 0) {
+      this.negative = true;
+      opt_value = -opt_value;
+    } else {
+      this.negative = false;
+    }
+
+    var temp = [], base = 0x100000000;
+    while (opt_value > 0) {
+      temp.unshift((opt_value & 0xFFFFFFFF) >>> 0);
+      opt_value = Math.floor(opt_value / base);
+    }
+
+    digits = arrayCopy(temp, 32, BITS);
+  } else if (typeof opt_value == 'string') {
+    //
   } else if (Array.isArray(opt_value)) {
-    digits = arrayCopy(opt_value, opt_bitsPerItem || 8, BITS);
+    digits = arrayCopy(opt_value, opt_extra || 8, BITS);
     this.negative = false;
   }
 
@@ -98,13 +120,13 @@ BigInt.prototype.toString = function (opt_radix) {
     var hi = this.digits[i];
     for (j = 0; j < size; j++) {
       var z = temp[j] << BITS | hi;
-      hi = z / DECIMAL_BASE | 0;
+      hi = Math.floor(z / DECIMAL_BASE);
       temp[j] = z - hi * DECIMAL_BASE;
     }
 
     while (hi) {
       temp[size++] = hi % DECIMAL_BASE;
-      hi = hi / DECIMAL_BASE | 0;
+      hi = Math.floor(hi / DECIMAL_BASE);
     }
   }
 
@@ -115,14 +137,14 @@ BigInt.prototype.toString = function (opt_radix) {
     rem = temp[i];
     for (j = 0; j < DECIMAL_SHIFT; j++) {
       str = (rem % 10) + str;
-      rem = rem / 10 | 0;
+      rem = Math.floor(rem / 10);
     }
   }
 
   rem = temp[i];
   do {
     str = (rem % 10) + str;
-    rem = rem / 10 | 0;
+    rem = Math.floor(rem / 10);
   } while (rem);
 
   return (this.negative ? '-' : '') + str;
