@@ -1,0 +1,18 @@
+{
+  "name": "bigintjs",
+  "version": "0.0.0",
+  "description": "Allows working with integers of any size.",
+  "main": "index.js",
+  "author": "Blixt <me@blixt.org>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/blixt/js-bigint/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/blixt/js-bigint.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
