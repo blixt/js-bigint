@@ -86,6 +86,7 @@ BigInt.prototype.copy = function () {
 
 BigInt.prototype.negate = function (opt_force) {
   this.negative = typeof opt_force != 'undefined' ? !!opt_force : !this.negative;
+  delete this.value;
 };
 
 BigInt.prototype.normalize = function () {
@@ -166,7 +167,7 @@ BigInt.prototype.toString = function (opt_radix) {
  * Best effort conversion to a JavaScript Number.
  */
 BigInt.prototype.valueOf = function () {
-  if (this.value) return this.value;
+  if ('value' in this) return this.value;
 
   var value = 0;
   for (var i = 0; i < this.digits.length; i++) {
