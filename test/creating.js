@@ -12,7 +12,6 @@ vows.describe('Creating BigInt').addBatch({
     },
 
     'has the correct value': function (big) {
-      assert.instanceOf(big, BigInt);
       assert.strictEqual(big.toString(), '3022415473659375');
       assert.strictEqual(big + 0, 0xABCDEF0ABCDEF);
     },
@@ -40,11 +39,8 @@ vows.describe('Creating BigInt').addBatch({
     'with 1-bit values': {
       topic: new BigInt([1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1], 1),
 
-      'is a BigInt': function (big) {
-        assert.instanceOf(big, BigInt);
-      },
-
       'has the correct value': function (big) {
+        assert.strictEqual(big + 0, 1337);
         assert.strictEqual(big.toString(), '1337');
       }
     },
