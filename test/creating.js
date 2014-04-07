@@ -28,10 +28,6 @@ vows.describe('creating').addBatch({
   'from an array': {
     topic: new BigInt([255, 255, 255, 255, 255, 255, 255, 255]),
 
-    'is a BigInt': function (big) {
-      assert.instanceOf(big, BigInt);
-    },
-
     'has the correct value': function (big) {
       assert.strictEqual(big.toString(), '18446744073709551615');
     },
@@ -52,5 +48,9 @@ vows.describe('creating').addBatch({
         assert.strictEqual(big.toString(), '338953138925153547590470800371487866880');
       }
     }
+  },
+
+  'without "new" operator': function () {
+    assert.strictEqual(BigInt(123).toString(), '123');
   }
 }).export(module);

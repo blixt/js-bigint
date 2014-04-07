@@ -14,8 +14,7 @@ vows.describe('tovalue').addBatch({
     'that is negative': {
       topic: function () {
         var big = new BigInt([15, 255, 255, 255, 255, 255, 255]);
-        big.negate();
-        return big;
+        return big.multiply(-1);
       },
 
       'has the correct value': function (big) {
