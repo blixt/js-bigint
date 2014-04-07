@@ -24,8 +24,7 @@ var big = new BigInt([0xFF000000, 0x00000000, 0x00000000], 32);
 console.log(big.toString());
 
 // You can now perform arithmetics on the BigInt.
-big.shiftRight(8);
-console.log(big.toString());
+console.log(big.shiftRight(8).toString());
 ```
 
 In the future, it'll be possible to create a `BigInt` from a string.
