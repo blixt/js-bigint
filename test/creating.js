@@ -25,6 +25,34 @@ vows.describe('creating').addBatch({
     }
   },
 
+  'from a string': {
+    topic: new BigInt('123456789012345678901234567890'),
+
+    'is a BigInt': function (big) {
+      assert.instanceOf(big, BigInt);
+    },
+
+    'has the correct value': function (big) {
+      assert.strictEqual(big.toString(), '123456789012345678901234567890');
+    },
+
+    'in base 16': {
+      topic: new BigInt('FFFFFFFF', 16),
+
+      'has the correct value': function (big) {
+        assert.strictEqual(big + 0, 0xFFFFFFFF);
+      }
+    },
+
+    'that is negative': {
+      topic: new BigInt('-123456789012345678901234567890'),
+
+      'has the correct value': function (big) {
+        assert.strictEqual(big.toString(), '-123456789012345678901234567890');
+      }
+    }
+  },
+
   'from an array': {
     topic: new BigInt([255, 255, 255, 255, 255, 255, 255, 255]),
 
