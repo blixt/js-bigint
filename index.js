@@ -1,4 +1,4 @@
-var arrayCopy = require('./lib/arraycopy');
+var array = require('./lib/array');
 
 module.exports = BigInt;
 
@@ -92,8 +92,8 @@ function BigInt(opt_value, opt_extra) {
   }
 }
 
-BigInt.prototype._fromArray = function (array, opt_bitsPerItem) {
-  this.values = arrayCopy(array, opt_bitsPerItem || 8, BITS);
+BigInt.prototype._fromArray = function (values, opt_bitsPerItem) {
+  this.values = array.copy(values, opt_bitsPerItem || 8, BITS);
   this.negative = false;
 };
 
@@ -116,7 +116,7 @@ BigInt.prototype._fromNumber = function (number) {
     number = Math.floor(number / base);
   }
 
-  this.values = arrayCopy(temp, 32, BITS);
+  this.values = array.copy(temp, 32, BITS);
 };
 
 BigInt.prototype._fromString = function (string, opt_radix) {
@@ -160,7 +160,7 @@ BigInt.prototype.shiftRight = function (bits) {
 };
 
 BigInt.prototype.toBytes = function (opt_destArray) {
-  return arrayCopy(this.values, BITS, 8, opt_destArray);
+  return array.copy(this.values, BITS, 8, opt_destArray);
 };
 
 BigInt.prototype.toJSON = function () {
