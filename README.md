@@ -17,17 +17,14 @@ Example
 Here's how to create a `BigInt` from a series of binary values:
 
 ```js
-var BigInt = require('bigintjs');
+var bigint = require('bigintjs');
 
-// Treat each value in the input array as a 32-bit integer.
-var big = new BigInt([0xFF000000, 0x00000000, 0x00000000], 32);
-console.log(big.toString());
+console.log(bigint('99999999999999999999999999999').add('1').toString());
+// 100000000000000000000000000000
 
-// You can now perform arithmetics on the BigInt.
-console.log(big.shiftRight(8).toString());
+// Bitwise operations on a big number (JavaScript only supports up to 32 bits)
+var value = bigint('0xFFFFFFFFFFFFFFFF').and('0xF0F0F0F0F0F0F0F0').shiftLeft(8);
 ```
-
-In the future, it'll be possible to create a `BigInt` from a string.
 
 
 Using this package
