@@ -58,9 +58,13 @@ vows.describe('misc').addBatch({
     'creates a byte array correctly': function (big) {
       var bytes = big.toBytes();
 
-      assert.strictEqual(bytes.length, 2);
-      assert.strictEqual(bytes[0], 255);
+      // This might seem counter-intuitive, but the array has to be padded when
+      // signed, to avoid confusion with a negative number (the first bit can
+      // only be set if the number is negative).
+      assert.strictEqual(bytes.length, 3);
+      assert.strictEqual(bytes[0], 0);
       assert.strictEqual(bytes[1], 255);
+      assert.strictEqual(bytes[2], 255);
     },
 
     'fills an existing array correctly': function (big) {
@@ -73,17 +77,35 @@ vows.describe('misc').addBatch({
       assert.strictEqual(bytes[3], 255);
     },
 
+    'does not pad array when unsigned': function (big) {
+      var bytes = big.toBytes(null, false);
+
+      assert.strictEqual(bytes.length, 2);
+      assert.strictEqual(bytes[0], 255);
+      assert.strictEqual(bytes[1], 255);
+    },
+
     'for a negative value': {
-      topic: new BigInt(-1),
+      'uses two\'s complement': function () {
+        var bytes;
 
-      'uses two\'s complement': function (big) {
-        var bytes = big.toBytes(new Uint8Array(4));
-
-        assert.strictEqual(bytes.length, 4);
+        bytes = new BigInt(-1).toBytes();
+        assert.strictEqual(bytes.length, 1);
         assert.strictEqual(bytes[0], 255);
-        assert.strictEqual(bytes[1], 255);
-        assert.strictEqual(bytes[2], 255);
-        assert.strictEqual(bytes[3], 255);
+
+        bytes = new BigInt(-128).toBytes();
+        assert.strictEqual(bytes.length, 1);
+        assert.strictEqual(bytes[0], 128);
+
+        bytes = new BigInt(-129).toBytes();
+        assert.strictEqual(bytes.length, 2);
+        assert.strictEqual(bytes[0], 255);
+        assert.strictEqual(bytes[1], 127);
+
+        bytes = new BigInt(-32768).toBytes();
+        assert.strictEqual(bytes.length, 2);
+        assert.strictEqual(bytes[0], 128);
+        assert.strictEqual(bytes[1], 0);
       }
     }
   }

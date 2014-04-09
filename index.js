@@ -416,8 +416,55 @@ BigInt.prototype.subtract = function (amount) {
   return result;
 };
 
-BigInt.prototype.toBytes = function (opt_destArray) {
-  return array.copy(this.values, BITS, 8, opt_destArray);
+BigInt.prototype.toBytes = function (opt_destArray, opt_signed) {
+  if (typeof opt_signed == 'undefined') opt_signed = true;
+
+  if (opt_destArray && !(opt_destArray instanceof Uint8Array)) {
+    throw new Error('toBytes only supports Uint8Array');
+  }
+
+  if (!opt_signed && this.negative) {
+    throw new Error('Can\'t convert negative BigInt to unsigned');
+  }
+
+  var values = array.copy(this.values, BITS, 8, opt_destArray);
+
+  // If the value should be unsigned, just return the array.
+  if (!opt_signed) return values;
+
+  // If the highest bit is set, we may need to add a byte to the array.
+  var extend = values[0] & 128 && (!this.negative || values[0] & 127 || values.length > 1);
+  if (extend && this.negative && values.length > 1) {
+    // If all the bits after the first are 0, we don't need to extend.
+    for (var i = 1; i < values.length; i++) {
+      if (values[i]) break;
+    }
+    if (i == values.length) extend = false;
+  }
+
+  // Extend the array if necessary.
+  if (extend) {
+    if (opt_destArray) {
+      // We can't modify a provided array.
+      throw new Error('Destination array is too small');
+    }
+
+    var temp = values;
+    values = new Uint8Array(temp.length + 1);
+    values.set(temp, 1);
+  }
+
+  // Change to two's complement if the number is negative.
+  if (this.negative) {
+    var carry = 1;
+    for (var i = values.length - 1; i >= 0; i--) {
+      var value = (values[i] ^ 0xFF) + carry;
+      values[i] = value & 0xFF;
+      carry = value >> 8;
+    }
+  }
+
+  return values;
 };
 
 BigInt.prototype.toJSON = function () {
