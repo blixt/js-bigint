@@ -11,18 +11,6 @@ var BITS = 15,
     DECIMAL_BASE = 10000;
 
 
-function and(values, bits) {
-  if (!(bits instanceof BigInt)) bits = new BigInt(bits);
-
-  var length = values.length,
-      bitsLength = bits.values.length,
-      min = Math.min(length, bitsLength);
-
-  for (var i = length - min, j = bitsLength - min; i < length; i++, j++) {
-    values[i] &= bits.values[j];
-  }
-}
-
 function shiftLeft(values, bits) {
   bits = ~~bits;
   if (bits < 0 || bits > BITS) throw new Error('Not supported');
@@ -132,9 +120,23 @@ BigInt.prototype._fromTypedArray = function (values) {
 }
 
 BigInt.prototype.and = function (bits) {
-  var bigInt = new BigInt(this);
-  and(bigInt.values, bits);
-  return bigInt;
+  bits = new BigInt(bits);
+
+  var bitsLength = bits.values.length,
+      diff = bitsLength - this.values.length;
+
+  var i;
+  for (i = 0; i < diff; i++) {
+    bits.values[i] = 0;
+  }
+
+  while (i < bitsLength) {
+    bits.values[i] &= this.values[i - diff];
+    i++;
+  }
+
+  bits.values = array.normalized(bits.values);
+  return bits;
 };
 
 BigInt.prototype.shiftLeft = function (bits) {
