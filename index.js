@@ -24,7 +24,8 @@ function and(values, bits) {
 }
 
 function shiftLeft(values, bits) {
-  if (bits > BITS) throw new Error('Not supported');
+  bits = ~~bits;
+  if (bits < 0 || bits > BITS) throw new Error('Not supported');
 
   // NOTE: Right now we guarantee that the left-most value is 0, but we may want
   // to revise this to ensure that the last carry is actually carried over.
@@ -37,7 +38,8 @@ function shiftLeft(values, bits) {
 }
 
 function shiftRight(values, bits) {
-  if (bits > BITS) throw new Error('Not supported');
+  bits = ~~bits;
+  if (bits < 0 || bits > BITS) throw new Error('Not supported');
 
   var carry = 0, invBits = BITS - bits, mask = (1 << bits) - 1;
   for (var i = 0; i < values.length; i++) {
@@ -150,12 +152,14 @@ BigInt.prototype.shiftLeft = function (bits) {
   }
 
   shiftLeft(bigInt.values, bits);
+  bigInt.values = array.normalized(bigInt.values);
   return bigInt;
 };
 
 BigInt.prototype.shiftRight = function (bits) {
   var bigInt = new BigInt(this);
   shiftRight(bigInt.values, bits);
+  bigInt.values = array.normalized(bigInt.values);
   return bigInt;
 };
 
