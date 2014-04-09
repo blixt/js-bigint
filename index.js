@@ -11,6 +11,88 @@ var BITS = 15,
     DECIMAL_BASE = 10000;
 
 
+function addValues(a, b) {
+  if (a.length < b.length) {
+    var temp = a; a = b; b = temp;
+  }
+
+  var carry = 0, diff = a.length - b.length,
+      result = new Uint16Array(a.length + 1);
+
+  // TODO: This is a bit messy – consider reversing value order.
+  for (var i = a.length; i >= diff; i--) {
+    carry += a[i] + b[i - diff];
+    result[i + 1] = carry & MASK;
+    carry >>= BITS;
+  }
+
+  while (i >= 0) {
+    carry += a[i];
+    result[i + 1] = carry & MASK;
+    carry >>= BITS;
+
+    i--;
+  }
+
+  if (carry) {
+    result[0] = carry;
+  } else {
+    // Normalize the array.
+    result = result.subarray(1);
+  }
+
+  var bigInt = new BigInt(result);
+  return bigInt;
+}
+
+function subValues(a, b) {
+  var negative = false, temp, i;
+
+  if (a.length < b.length) {
+    negative = true;
+    temp = a; a = b; b = temp;
+  } else if (a.length == b.length) {
+    for (i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) break;
+    }
+
+    // The two numbers are equal.
+    if (i == a.length) {
+      return new BigInt(0);
+    }
+
+    if (a[i] < b[i]) {
+      negative = true;
+      temp = a; a = b; b = temp;
+    }
+  }
+
+  var borrow = 0, diff = a.length - b.length,
+      result = new Uint16Array(a.length);
+
+  for (i = a.length - 1; i >= diff; i--) {
+    // TODO: Is there a better way to do unsigned arithmetic? Rewrite this.
+    borrow = a[i] - b[i - diff] - borrow;
+    if (borrow < 0) borrow += 65536;
+    result[i] = borrow & MASK;
+    borrow >>= BITS;
+  }
+
+  while (i >= 0) {
+    borrow = a[i] - borrow;
+    if (borrow < 0) borrow += 65536;
+    result[i] = borrow & MASK;
+    borrow >>= BITS;
+
+    i--;
+  }
+
+  var bigInt = new BigInt(array.normalized(result));
+  bigInt.negative = negative;
+
+  return bigInt;
+}
+
 function shiftLeft(values, bits) {
   bits = ~~bits;
   if (bits < 0 || bits > BITS) throw new Error('Not supported');
@@ -117,7 +199,35 @@ BigInt.prototype._fromString = function (string, opt_radix) {
 BigInt.prototype._fromTypedArray = function (values) {
   this.values = values;
   this.negative = false;
-}
+};
+
+BigInt.prototype.add = function (amount) {
+  // TODO: If amount is a number, we could optimize it.
+  if (!(amount instanceof BigInt)) amount = new BigInt(amount);
+
+  var result, a = this.values, b = amount.values;
+
+  if (this.negative) {
+    if (amount.negative) {
+      result = addValues(a, b);
+
+      // TODO: Better way to determine if value is non-zero.
+      if (result.values[result.values.length - 1]) {
+        result.negative = !result.negative;
+      }
+    } else {
+      result = subValues(b, a);
+    }
+  } else {
+    if (amount.negative) {
+      result = subValues(a, b);
+    } else {
+      result = addValues(a, b);
+    }
+  }
+
+  return result;
+};
 
 BigInt.prototype.and = function (bits) {
   bits = new BigInt(bits);
@@ -163,6 +273,34 @@ BigInt.prototype.shiftRight = function (bits) {
   shiftRight(bigInt.values, bits);
   bigInt.values = array.normalized(bigInt.values);
   return bigInt;
+};
+
+BigInt.prototype.subtract = function (amount) {
+  // TODO: If amount is a number, we could optimize it.
+  if (!(amount instanceof BigInt)) amount = new BigInt(amount);
+
+  var result, a = this.values, b = amount.values;
+
+  if (this.negative) {
+    if (amount.negative) {
+      result = subValues(a, b);
+    } else {
+      result = addValues(a, b);
+    }
+
+    // TODO: Better way to determine if value is non-zero.
+    if (result.values[result.values.length - 1]) {
+      result.negative = !result.negative;
+    }
+  } else {
+    if (amount.negative) {
+      result = addValues(a, b);
+    } else {
+      result = subValues(a, b);
+    }
+  }
+
+  return result;
 };
 
 BigInt.prototype.toBytes = function (opt_destArray) {
