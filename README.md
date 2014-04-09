@@ -7,14 +7,9 @@ JavaScript's `Number` type can accurately represent).
 This is a pure JavaScript library, unlike other libraries that do the
 same thing.
 
-***Note:*** This is still a very early version and a lot of operations
-are missing.
-
 
 Example
 -------
-
-Here's how to create a `BigInt` from a series of binary values:
 
 ```js
 var bigint = require('bigintjs');
