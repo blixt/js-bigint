@@ -4,14 +4,52 @@ var assert = require('assert'),
 var BigInt = require('../');
 
 vows.describe('misc').addBatch({
-  'operations create copies': function () {
-    var big = new BigInt(3);
+  'operations': {
+    'create copies': function () {
+      var big = new BigInt(3);
 
-    assert.strictEqual(big.shiftLeft(1) + 0, 6);
-    assert.strictEqual(big.shiftRight(1) + 0, 1);
-    assert.strictEqual(big.and(1) + 0, 1);
+      assert.strictEqual(big.shiftLeft(1) + 0, 6);
+      assert.strictEqual(big.shiftRight(1) + 0, 1);
+      assert.strictEqual(big.and(1) + 0, 1);
+      assert.strictEqual(big.add(10) + 0, 13);
+      assert.strictEqual(big.subtract(5) + 0, -2);
 
-    assert.strictEqual(big.toString(), '3');
+      assert.strictEqual(big.toString(), '3');
+    },
+
+    'accept numbers, strings, and BigInt': {
+      topic: new BigInt(5),
+
+      'add': function (big) {
+        assert.strictEqual(big.add(10).toString(), '15');
+        assert.strictEqual(big.add('10').toString(), '15');
+        assert.strictEqual(big.add(new BigInt(10)).toString(), '15');
+      },
+
+      'and': function (big) {
+        assert.strictEqual(big.and(6).toString(), '4');
+        assert.strictEqual(big.and('6').toString(), '4');
+        assert.strictEqual(big.and(new BigInt(6)).toString(), '4');
+      },
+
+      'shiftLeft': function (big) {
+        assert.strictEqual(big.shiftLeft(1).toString(), '10');
+        assert.strictEqual(big.shiftLeft('1').toString(), '10');
+        assert.strictEqual(big.shiftLeft(new BigInt(1)).toString(), '10');
+      },
+
+      'shiftRight': function (big) {
+        assert.strictEqual(big.shiftRight(1).toString(), '2');
+        assert.strictEqual(big.shiftRight('1').toString(), '2');
+        assert.strictEqual(big.shiftRight(new BigInt(1)).toString(), '2');
+      },
+
+      'subtract': function (big) {
+        assert.strictEqual(big.subtract(10).toString(), '-5');
+        assert.strictEqual(big.subtract('10').toString(), '-5');
+        assert.strictEqual(big.subtract(new BigInt(10)).toString(), '-5');
+      }
+    }
   },
 
   'toBytes': {

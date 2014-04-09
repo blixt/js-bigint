@@ -5,27 +5,82 @@ var BigInt = require('../');
 
 vows.describe('arithmetic').addBatch({
   'addition': {
-    topic: new BigInt(123),
+    topic: new BigInt(123456),
 
     'with a positive number': function (big) {
-      assert.strictEqual(big.add(0).toString(), '123');
-      assert.strictEqual(big.add(1).toString(), '124');
-      assert.strictEqual(big.add(456).toString(), '579');
-    },
-
-    'with a string': function (big) {
-      var result = big.add('100000000000000000');
-      assert.strictEqual(result.toString(), '100000000000000123');
+      assert.strictEqual(big.add(0).toString(), '123456');
+      assert.strictEqual(big.add(1).toString(), '123457');
+      assert.strictEqual(big.add(123).toString(), '123579');
+      assert.strictEqual(big.add(123456789).toString(), '123580245');
     },
 
     'with a negative number': function (big) {
-      assert.strictEqual(big.add(-1).toString(), '-122');
-      assert.strictEqual(big.add(-456).toString(), '-333');
+      assert.strictEqual(big.add(-1).toString(), '123455');
+      assert.strictEqual(big.add(-456).toString(), '123000');
+      assert.strictEqual(big.add(-123000).toString(), '456');
+      assert.strictEqual(big.add(-123456789).toString(), '-123333333');
     },
 
-    'with another BigInt': function (big) {
-      var other = new BigInt(456);
-      assert.strictEqual(big.add(other).toString(), '579');
+    'with the same number, negated': function (big) {
+      assert.strictEqual(big.add(-123456).toString(), '0');
+    },
+
+    'on a negative number': {
+      topic: new BigInt(-123456),
+
+      'with a positive number': function (big) {
+        assert.strictEqual(big.add(0).toString(), '-123456');
+        assert.strictEqual(big.add(1).toString(), '-123455');
+        assert.strictEqual(big.add(123).toString(), '-123333');
+        assert.strictEqual(big.add(123456789).toString(), '123333333');
+      },
+
+      'with another negative number': function (big) {
+        assert.strictEqual(big.add(-1).toString(), '-123457');
+        assert.strictEqual(big.add(-456).toString(), '-123912');
+        assert.strictEqual(big.add(-123000).toString(), '-246456');
+        assert.strictEqual(big.add(-123456789).toString(), '-123580245');
+      }
+    }
+  },
+
+  'subtraction': {
+    topic: new BigInt(123456),
+
+    'with a positive number': function (big) {
+      assert.strictEqual(big.subtract(0).toString(), '123456');
+      assert.strictEqual(big.subtract(1).toString(), '123455');
+      assert.strictEqual(big.subtract(123).toString(), '123333');
+      assert.strictEqual(big.subtract(123456789).toString(), '-123333333');
+    },
+
+    'with a negative number': function (big) {
+      assert.strictEqual(big.subtract(-1).toString(), '123457');
+      assert.strictEqual(big.subtract(-456).toString(), '123912');
+      assert.strictEqual(big.subtract(-123000).toString(), '246456');
+      assert.strictEqual(big.subtract(-123456789).toString(), '123580245');
+    },
+
+    'with the same number': function (big) {
+      assert.strictEqual(big.subtract(123456).toString(), '0');
+    },
+
+    'on a negative number': {
+      topic: new BigInt(-123456),
+
+      'with a positive number': function (big) {
+        assert.strictEqual(big.subtract(0).toString(), '-123456');
+        assert.strictEqual(big.subtract(1).toString(), '-123457');
+        assert.strictEqual(big.subtract(123).toString(), '-123579');
+        assert.strictEqual(big.subtract(123456789).toString(), '-123580245');
+      },
+
+      'with another negative number': function (big) {
+        assert.strictEqual(big.subtract(-1).toString(), '-123455');
+        assert.strictEqual(big.subtract(-456).toString(), '-123000');
+        assert.strictEqual(big.subtract(-123000).toString(), '-456');
+        assert.strictEqual(big.subtract(-123456789).toString(), '123333333');
+      }
     }
   }
 }).export(module);

@@ -78,7 +78,15 @@ vows.describe('creating').addBatch({
     }
   },
 
-  'without "new" operator': function () {
-    assert.strictEqual(BigInt(123).toString(), '123');
+  'without "new" operator': {
+    topic: BigInt(123),
+
+    'is a BigInt': function (big) {
+      assert.instanceOf(big, BigInt);
+    },
+
+    'has the correct value': function (big) {
+      assert.strictEqual(big.toString(), '123');
+    }
   }
 }).export(module);
