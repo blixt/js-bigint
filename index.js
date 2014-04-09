@@ -191,9 +191,122 @@ BigInt.prototype._fromNumber = function (number) {
   this.values = array.copy(temp, 32, BITS);
 };
 
+var lookupLog = [], lookupConvWidth = [], lookupConvMultMax = [];
+
+var lookupValue = new Uint8Array([
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  37, 37, 37, 37, 37, 37,
+  37, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+  25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 37, 37, 37, 37,
+  37, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24,
+  25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37,
+  37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 37
+]);
+
 BigInt.prototype._fromString = function (string, opt_radix) {
-  this.values = new Uint16Array();
-  this.negative = false;
+  if (opt_radix && (opt_radix < 2 || opt_radix > 36)) {
+    throw new Error('Radix not in range 2–36');
+  }
+
+  var negative = false;
+
+  var a = 0;
+  if (string[a] == '+') {
+    a++;
+  } else if (string[a] == '-') {
+    a++;
+    negative = true;
+  }
+
+  if (!opt_radix) {
+    if (string[a] == '0') {
+      a++;
+      if (string[a] == 'x' || string[a] == 'X') {
+        a++;
+        opt_radix = 16;
+      } else if (string[a] == 'b' || string[a] == 'B') {
+        a++;
+        opt_radix = 2;
+      } else {
+        opt_radix = 8;
+      }
+    } else {
+      opt_radix = 10;
+    }
+  }
+
+  var convMultMax, convWidth,
+      log = lookupLog[opt_radix];
+
+  if (log) {
+    convMultMax = lookupConvMultMax[opt_radix];
+    convWidth = lookupConvWidth[opt_radix];
+  } else {
+    // Build lookup table on the fly.
+    log = Math.log(opt_radix) / Math.log(BASE);
+
+    convMultMax = opt_radix;
+    convWidth = 1;
+
+    while (true) {
+      var next = convMultMax * opt_radix;
+      if (next > BASE) break;
+      convMultMax = next;
+      convWidth++;
+    }
+
+    lookupConvMultMax[opt_radix] = convMultMax;
+    lookupConvWidth[opt_radix] = convWidth;
+    lookupLog[opt_radix] = log;
+  }
+
+  // Find the last character within the specified radix.
+  var b = a;
+  while (lookupValue[string.charCodeAt(b)] < opt_radix) b++;
+
+  var maxSize = Math.ceil((b - a) * log), index = maxSize - 1;
+  var result = new Uint16Array(maxSize);
+
+  while (a < b) {
+    var i, value = lookupValue[string.charCodeAt(a++)];
+    for (i = 1; i < convWidth && a < b; i++, a++) {
+      value = value * opt_radix + lookupValue[string.charCodeAt(a)];
+    }
+
+    var convMult;
+    if (i == convWidth) {
+      convMult = convMultMax;
+    } else {
+      convMult = opt_radix;
+      while (i > 1) {
+        convMult *= opt_radix;
+        i--;
+      }
+    }
+
+    for (i = maxSize - 1; i >= index; i--) {
+      value += result[i] * convMult;
+      result[i] = value & MASK;
+      value >>= BITS;
+    }
+
+    if (value) {
+      result[i] = value;
+      index--;
+    }
+  }
+
+  this.values = result.subarray(index);
+  this.negative = negative;
 };
 
 BigInt.prototype._fromTypedArray = function (values) {
