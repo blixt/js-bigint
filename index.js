@@ -519,6 +519,10 @@ BigInt.prototype.toString = function (opt_radix) {
   return (this.negative ? '-' : '') + str;
 };
 
+BigInt.prototype.toUnsignedBytes = function (opt_destArray) {
+  return this.toBytes(opt_destArray, false);
+};
+
 /**
  * Best effort conversion to a JavaScript Number.
  */

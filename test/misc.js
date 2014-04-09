@@ -52,7 +52,7 @@ vows.describe('misc').addBatch({
     }
   },
 
-  'toBytes': {
+  'converting to bytes': {
     topic: new BigInt(65535),
 
     'creates a byte array correctly': function (big) {
@@ -78,7 +78,7 @@ vows.describe('misc').addBatch({
     },
 
     'does not pad array when unsigned': function (big) {
-      var bytes = big.toBytes(null, false);
+      var bytes = big.toUnsignedBytes();
 
       assert.strictEqual(bytes.length, 2);
       assert.strictEqual(bytes[0], 255);
