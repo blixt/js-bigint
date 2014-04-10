@@ -35,6 +35,12 @@ vows.describe('misc').addBatch({
         assert.strictEqual(big.and(new BigInt(6)).toString(), '4');
       },
 
+      'multiply': function (big) {
+        assert.strictEqual(big.multiply(10).toString(), '50');
+        assert.strictEqual(big.multiply('10').toString(), '50');
+        assert.strictEqual(big.multiply(new BigInt(10)).toString(), '50');
+      },
+
       'or': function (big) {
         assert.strictEqual(big.or(6).toString(), '7');
         assert.strictEqual(big.or('6').toString(), '7');
