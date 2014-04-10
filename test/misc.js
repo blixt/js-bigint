@@ -11,7 +11,9 @@ vows.describe('misc').addBatch({
       assert.strictEqual(big.shiftLeft(1) + 0, 6);
       assert.strictEqual(big.shiftRight(1) + 0, 1);
       assert.strictEqual(big.and(1) + 0, 1);
+      assert.strictEqual(big.or(28) + 0, 31);
       assert.strictEqual(big.add(10) + 0, 13);
+      assert.strictEqual(big.negate() + 0, -3);
       assert.strictEqual(big.subtract(5) + 0, -2);
 
       assert.strictEqual(big.toString(), '3');
@@ -30,6 +32,12 @@ vows.describe('misc').addBatch({
         assert.strictEqual(big.and(6).toString(), '4');
         assert.strictEqual(big.and('6').toString(), '4');
         assert.strictEqual(big.and(new BigInt(6)).toString(), '4');
+      },
+
+      'or': function (big) {
+        assert.strictEqual(big.or(6).toString(), '7');
+        assert.strictEqual(big.or('6').toString(), '7');
+        assert.strictEqual(big.or(new BigInt(6)).toString(), '7');
       },
 
       'shiftLeft': function (big) {
