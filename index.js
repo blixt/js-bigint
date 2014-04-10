@@ -314,6 +314,11 @@ BigInt.prototype._fromTypedArray = function (values) {
   this.negative = false;
 };
 
+BigInt.prototype._isZero = function () {
+  // Always assume the internal store is normalized.
+  return !this.values.length || !this.values[0];
+};
+
 BigInt.prototype.add = function (amount) {
   // TODO: If amount is a number, we could optimize it.
   if (!(amount instanceof BigInt)) amount = new BigInt(amount);
@@ -323,11 +328,7 @@ BigInt.prototype.add = function (amount) {
   if (this.negative) {
     if (amount.negative) {
       result = addValues(a, b);
-
-      // TODO: Better way to determine if value is non-zero.
-      if (result.values[result.values.length - 1]) {
-        result.negative = !result.negative;
-      }
+      if (!this._isZero()) result.negative = !result.negative;
     } else {
       result = subValues(b, a);
     }
@@ -362,6 +363,15 @@ BigInt.prototype.and = function (bits) {
   return bits;
 };
 
+BigInt.prototype.negate = function () {
+  // TODO: Is there a reason for why we would always want to copy?
+  if (this._isZero()) return this;
+
+  var bigInt = new BigInt(this);
+  bigInt.negative = !bigInt.negative;
+  return bigInt;
+};
+
 BigInt.prototype.shiftLeft = function (bits) {
   var bigInt;
 
@@ -388,6 +398,11 @@ BigInt.prototype.shiftRight = function (bits) {
   return bigInt;
 };
 
+BigInt.prototype.sign = function () {
+  if (this._isZero()) return 0;
+  return this.negative ? -1 : 1;
+};
+
 BigInt.prototype.subtract = function (amount) {
   // TODO: If amount is a number, we could optimize it.
   if (!(amount instanceof BigInt)) amount = new BigInt(amount);
@@ -401,10 +416,7 @@ BigInt.prototype.subtract = function (amount) {
       result = addValues(a, b);
     }
 
-    // TODO: Better way to determine if value is non-zero.
-    if (result.values[result.values.length - 1]) {
-      result.negative = !result.negative;
-    }
+    if (!this._isZero()) result.negative = !result.negative;
   } else {
     if (amount.negative) {
       result = addValues(a, b);
