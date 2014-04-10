@@ -8,14 +8,14 @@ vows.describe('tovalue').addBatch({
     topic: new BigInt(4503599627370495),
 
     'has the correct value': function (big) {
-      assert.strictEqual(big + 0, 4503599627370495);
+      assert.strictEqual(+big, 4503599627370495);
     },
 
     'that is negative': {
       topic: new BigInt(-4503599627370495),
 
       'has the correct value': function (big) {
-        assert.strictEqual(big + 0, -4503599627370495);
+        assert.strictEqual(+big, -4503599627370495);
       }
     }
   }

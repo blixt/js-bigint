@@ -8,13 +8,14 @@ vows.describe('misc').addBatch({
     'create copies': function () {
       var big = new BigInt(3);
 
-      assert.strictEqual(big.shiftLeft(1) + 0, 6);
-      assert.strictEqual(big.shiftRight(1) + 0, 1);
-      assert.strictEqual(big.and(1) + 0, 1);
-      assert.strictEqual(big.or(28) + 0, 31);
-      assert.strictEqual(big.add(10) + 0, 13);
-      assert.strictEqual(big.negate() + 0, -3);
-      assert.strictEqual(big.subtract(5) + 0, -2);
+      assert.strictEqual(+big.shiftLeft(1), 6);
+      assert.strictEqual(+big.shiftRight(1), 1);
+      assert.strictEqual(+big.and(1), 1);
+      assert.strictEqual(+big.or(28), 31);
+      assert.strictEqual(+big.add(10), 13);
+      assert.strictEqual(+big.multiply(123), 369);
+      assert.strictEqual(+big.negate(), -3);
+      assert.strictEqual(+big.subtract(5), -2);
 
       assert.strictEqual(big.toString(), '3');
     },

@@ -8,15 +8,15 @@ vows.describe('bitwise').addBatch({
     topic: new BigInt(0xF0F0F0F0),
 
     'with bigger bitmask': function (big) {
-      assert.strictEqual(big.and(0xAAAAAAAAAAAA) + 0, 0xA0A0A0A0);
+      assert.strictEqual(+big.and(0xAAAAAAAAAAAA), 0xA0A0A0A0);
     },
 
     'with equal size bitmask': function (big) {
-      assert.strictEqual(big.and(0xAAAAAAAA) + 0, 0xA0A0A0A0);
+      assert.strictEqual(+big.and(0xAAAAAAAA), 0xA0A0A0A0);
     },
 
     'with smaller bitmask': function (big) {
-      assert.strictEqual(big.and(0xAA) + 0, 0xA0);
+      assert.strictEqual(+big.and(0xAA), 0xA0);
     }
   },
 
@@ -28,11 +28,11 @@ vows.describe('bitwise').addBatch({
     },
 
     'with equal size bitmask': function (big) {
-      assert.strictEqual(big.or('0x1234321') + 0, 20136753);
+      assert.strictEqual(+big.or('0x1234321'), 20136753);
     },
 
     'with smaller bitmask': function (big) {
-      assert.strictEqual(big.or('0xAB') + 0, 17825979);
+      assert.strictEqual(+big.or('0xAB'), 17825979);
     }
   },
 
@@ -40,13 +40,13 @@ vows.describe('bitwise').addBatch({
     topic: new BigInt(0xDDCCBBAA),
 
     'left': function (big) {
-      assert.strictEqual(big.shiftLeft(8) + 0, 0xDDCCBBAA00);
+      assert.strictEqual(+big.shiftLeft(8), 0xDDCCBBAA00);
       // Corner case where value fits perfectly in one value before shift.
-      assert.strictEqual(new BigInt(32767).shiftLeft(1) + 0, 65534);
+      assert.strictEqual(+new BigInt(32767).shiftLeft(1), 65534);
     },
 
     'right': function (big) {
-      assert.strictEqual(big.shiftRight(8) + 0, 0xDDCCBB);
+      assert.strictEqual(+big.shiftRight(8), 0xDDCCBB);
     }
   },
 
@@ -58,11 +58,11 @@ vows.describe('bitwise').addBatch({
     },
 
     'with equal size bitmask': function (big) {
-      assert.strictEqual(big.xor('0x1234321') + 0, 3359536);
+      assert.strictEqual(+big.xor('0x1234321'), 3359536);
     },
 
     'with smaller bitmask': function (big) {
-      assert.strictEqual(big.xor('0xAB') + 0, 17825978);
+      assert.strictEqual(+big.xor('0xAB'), 17825978);
     }
   }
 }).export(module);

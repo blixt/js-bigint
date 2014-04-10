@@ -13,14 +13,14 @@ vows.describe('creating').addBatch({
 
     'has the correct value': function (big) {
       assert.strictEqual(big.toString(), '3022415473659375');
-      assert.strictEqual(big + 0, 0xABCDEF0ABCDEF);
+      assert.strictEqual(+big, 0xABCDEF0ABCDEF);
     },
 
     'that is negative': {
       topic: new BigInt(-0xFEDCBA),
 
       'has the correct value': function (big) {
-        assert.strictEqual(big + 0, -0xFEDCBA);
+        assert.strictEqual(+big, -0xFEDCBA);
       }
     }
   },
@@ -40,7 +40,7 @@ vows.describe('creating').addBatch({
       topic: new BigInt('FFFFFFFF', 16),
 
       'has the correct value': function (big) {
-        assert.strictEqual(big + 0, 0xFFFFFFFF);
+        assert.strictEqual(+big, 0xFFFFFFFF);
       }
     },
 
@@ -64,7 +64,7 @@ vows.describe('creating').addBatch({
       topic: new BigInt([1, 0, 1, 0, 0, 1, 1, 1, 0, 0, 1], 1),
 
       'has the correct value': function (big) {
-        assert.strictEqual(big + 0, 1337);
+        assert.strictEqual(+big, 1337);
         assert.strictEqual(big.toString(), '1337');
       }
     },
