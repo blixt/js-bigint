@@ -108,5 +108,35 @@ vows.describe('misc').addBatch({
         assert.strictEqual(bytes[1], 0);
       }
     }
+  },
+
+  'sign': {
+    'for a negative number': {
+      topic: new BigInt(-123456),
+
+      'is -1': function (big) {
+        assert.strictEqual(big.sign(), -1);
+      }
+    },
+
+    'for a positive number': {
+      topic: new BigInt(123456),
+
+      'is 1': function (big) {
+        assert.strictEqual(big.sign(), 1);
+      }
+    },
+
+    'for zero': {
+      topic: new BigInt(0),
+
+      'is 0': function (big) {
+        assert.strictEqual(big.sign(), 0);
+      },
+
+      'is 0 after arithmetics': function (big) {
+        assert.strictEqual(big.subtract(123456).add(123456).sign(), 0);
+      }
+    }
   }
 }).export(module);
