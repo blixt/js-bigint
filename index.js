@@ -151,7 +151,7 @@ function BigInt(opt_value, opt_extra) {
 
   if (Array.isArray(opt_value)) {
     this._fromArray(opt_value, opt_extra);
-  } else if (opt_value instanceof BigInt) {
+  } else if (opt_value && opt_value.values instanceof Uint16Array) {
     this._fromBigInt(opt_value);
   } else if (typeof opt_value == 'number') {
     this._fromNumber(opt_value);
@@ -171,7 +171,7 @@ BigInt.prototype._fromArray = function (values, opt_bitsPerItem) {
 
 BigInt.prototype._fromBigInt = function (bigInt) {
   this.values = new Uint16Array(bigInt.values);
-  this.negative = bigInt.negative;
+  this.negative = !!bigInt.negative;
 };
 
 BigInt.prototype._fromNumber = function (number) {
