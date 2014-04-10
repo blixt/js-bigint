@@ -563,3 +563,20 @@ BigInt.prototype.valueOf = function () {
 
   return this.negative ? -value : value;
 };
+
+BigInt.prototype.xor = function (bits) {
+  bits = new BigInt(bits);
+
+  var bitsLength = bits.values.length, thisLength = this.values.length,
+      smallest = Math.min(bitsLength, thisLength),
+      result = bitsLength > smallest ? bits : new BigInt(this),
+      i = result.values.length - 1, end = i - smallest,
+      a = bitsLength - 1, b = thisLength - 1;
+
+  while (i >= end) {
+    result.values[i--] = bits.values[a--] ^ this.values[b--];
+  }
+
+  result.values = array.normalized(result.values);
+  return result;
+};

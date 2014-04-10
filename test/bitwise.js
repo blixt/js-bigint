@@ -48,5 +48,21 @@ vows.describe('bitwise').addBatch({
     'right': function (big) {
       assert.strictEqual(big.shiftRight(8) + 0, 0xDDCCBB);
     }
+  },
+
+  'xor': {
+    topic: new BigInt('0x1100011'),
+
+    'with bigger bitmask': function (big) {
+      assert.strictEqual(big.xor('0xA0A0A0A0A0A0A0A') + 0, 723401728398592539);
+    },
+
+    'with equal size bitmask': function (big) {
+      assert.strictEqual(big.xor('0x1234321') + 0, 3359536);
+    },
+
+    'with smaller bitmask': function (big) {
+      assert.strictEqual(big.xor('0xAB') + 0, 17825978);
+    }
   }
 }).export(module);
