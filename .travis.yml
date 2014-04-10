@@ -4,3 +4,5 @@ node_js:
 branches:
   only:
     - master
+after_success:
+  - phantomjs perf/runner.js

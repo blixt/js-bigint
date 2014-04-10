@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "assert": "^1.1.1",
+    "benchmark": "^1.0.0",
     "vows": "~0.7.0"
   }
 }
