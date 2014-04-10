@@ -41,8 +41,31 @@ function addValues(a, b) {
     result = result.subarray(1);
   }
 
-  var bigInt = new BigInt(result);
-  return bigInt;
+  return new BigInt(result);
+}
+
+function mulValues(a, b) {
+  // TODO: Squaring optimization.
+  // TODO: Karatsuba algorithm.
+
+  var result = new Uint16Array(a.length + b.length),
+      startIndex = result.length - 1;
+
+  for (var i = a.length - 1; i >= 0; i--) {
+    var carry = 0, value = a[i], index = startIndex--;
+
+    for (var j = b.length - 1; j >= 0; j--) {
+      carry += result[index] + b[j] * value;
+      result[index--] = carry & MASK;
+      carry = carry >>> BITS;
+    }
+
+    if (carry) {
+      result[index] += carry & MASK;
+    }
+  }
+
+  return new BigInt(array.normalized(result));
 }
 
 function subValues(a, b) {
@@ -361,6 +384,16 @@ BigInt.prototype.and = function (bits) {
 
   bits.values = array.normalized(bits.values);
   return bits;
+};
+
+BigInt.prototype.multiply = function (amount) {
+  if (!(amount instanceof BigInt)) amount = new BigInt(amount);
+
+  var result = mulValues(this.values, amount.values);
+  if (!result._isZero() && this.negative != amount.negative) {
+    result.negative = true;
+  }
+  return result;
 };
 
 BigInt.prototype.negate = function () {

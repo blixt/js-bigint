@@ -44,6 +44,23 @@ vows.describe('arithmetic').addBatch({
     }
   },
 
+  'multiplication': {
+    topic: new BigInt(123456),
+
+    'with a negative number': function (big) {
+      assert.strictEqual(big.multiply(-1).toString(), '-123456');
+      assert.strictEqual(big.multiply(-10).toString(), '-1234560');
+      assert.strictEqual(big.multiply(-987654321).toString(), '-121931851853376');
+    },
+
+    'with a positive number': function (big) {
+      assert.strictEqual(big.multiply(0).toString(), '0');
+      assert.strictEqual(big.multiply(1).toString(), '123456');
+      assert.strictEqual(big.multiply(10).toString(), '1234560');
+      assert.strictEqual(big.multiply(987654321).toString(), '121931851853376');
+    }
+  },
+
   'subtraction': {
     topic: new BigInt(123456),
 
