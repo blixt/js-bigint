@@ -24,7 +24,7 @@ vows.describe('bitwise').addBatch({
     topic: new BigInt('0x1100011'),
 
     'with bigger bitmask': function (big) {
-      assert.strictEqual(big.or('0xA0A0A0A0A0A0A0A') + 0, 723401728398592539);
+      assert.strictEqual(big.or('0xA0A0A0A0A0A0A0A').toString(), '723401728398592539');
     },
 
     'with equal size bitmask': function (big) {
@@ -54,7 +54,7 @@ vows.describe('bitwise').addBatch({
     topic: new BigInt('0x1100011'),
 
     'with bigger bitmask': function (big) {
-      assert.strictEqual(big.xor('0xA0A0A0A0A0A0A0A') + 0, 723401728398592539);
+      assert.strictEqual(big.xor('0xA0A0A0A0A0A0A0A').toString(), '723401728398592539');
     },
 
     'with equal size bitmask': function (big) {
