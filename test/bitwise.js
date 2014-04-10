@@ -20,6 +20,22 @@ vows.describe('bitwise').addBatch({
     }
   },
 
+  'or': {
+    topic: new BigInt('0b1000100010001'),
+
+    'with bigger bitmask': function (big) {
+      assert.strictEqual(big.or('0b111111111111110010001000100') + 0, 134214997);
+    },
+
+    'with equal size bitmask': function (big) {
+      assert.strictEqual(big.or('0b0010001000100') + 0, 5461);
+    },
+
+    'with smaller bitmask': function (big) {
+      assert.strictEqual(big.or('0b1110') + 0, 4383);
+    }
+  },
+
   'shift': {
     topic: new BigInt(0xDDCCBBAA),
 
