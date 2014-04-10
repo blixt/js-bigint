@@ -477,21 +477,21 @@ BigInt.prototype.subtract = function (amount) {
   return result;
 };
 
-BigInt.prototype.toBytes = function (opt_destArray, opt_signed) {
-  if (typeof opt_signed == 'undefined') opt_signed = true;
+BigInt.prototype.toBytes = function (opt_destArray, opt_unsigned) {
+  if (typeof opt_unsigned == 'undefined') opt_unsigned = false;
 
   if (opt_destArray && !(opt_destArray instanceof Uint8Array)) {
     throw new Error('toBytes only supports Uint8Array');
   }
 
-  if (!opt_signed && this.negative) {
+  if (opt_unsigned && this.negative) {
     throw new Error('Can\'t convert negative BigInt to unsigned');
   }
 
   var values = array.copy(this.values, BITS, 8, opt_destArray);
 
   // If the value should be unsigned, just return the array.
-  if (!opt_signed) return values;
+  if (opt_unsigned) return values;
 
   // If the highest bit is set, we may need to add a byte to the array.
   var extend = values[0] & 128 && (!this.negative || values[0] & 127 || values.length > 1);
@@ -581,7 +581,7 @@ BigInt.prototype.toString = function (opt_radix) {
 };
 
 BigInt.prototype.toUnsignedBytes = function (opt_destArray) {
-  return this.toBytes(opt_destArray, false);
+  return this.toBytes(opt_destArray, true);
 };
 
 /**
