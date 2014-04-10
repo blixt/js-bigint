@@ -1,6 +1,6 @@
 {
   "name": "bigintjs",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Allows working with integers of any size.",
   "main": "index.js",
   "author": "Blixt <me@blixt.org>",
