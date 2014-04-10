@@ -21,18 +21,18 @@ vows.describe('bitwise').addBatch({
   },
 
   'or': {
-    topic: new BigInt('0b1000100010001'),
+    topic: new BigInt('0x1100011'),
 
     'with bigger bitmask': function (big) {
-      assert.strictEqual(big.or('0b111111111111110010001000100') + 0, 134214997);
+      assert.strictEqual(big.or('0xA0A0A0A0A0A0A0A') + 0, 723401728398592539);
     },
 
     'with equal size bitmask': function (big) {
-      assert.strictEqual(big.or('0b0010001000100') + 0, 5461);
+      assert.strictEqual(big.or('0x1234321') + 0, 20136753);
     },
 
     'with smaller bitmask': function (big) {
-      assert.strictEqual(big.or('0b1110') + 0, 4383);
+      assert.strictEqual(big.or('0xAB') + 0, 17825979);
     }
   },
 
