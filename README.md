@@ -8,6 +8,18 @@ This is a pure JavaScript library, unlike other libraries that do the
 same thing.
 
 
+This project is in an early state
+---------------------------------
+
+Some basic operations are still missing. Most notably:
+
+- Division (and modulus), but you can use bit shifting for powers of 2
+- Comparison (greater than / less than)
+- Square root
+
+Feel free to submit a pull request for any of the above.
+
+
 Example
 -------
 
