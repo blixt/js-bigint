@@ -5,7 +5,31 @@ Enables working with integers beyond 53 bits (the upper limit of what
 JavaScript's `Number` type can accurately represent).
 
 This is a pure JavaScript library, unlike other libraries that do the
-same thing.
+same thing. The main benefit of being pure JavaScript is that you can
+use it in a browser environment.
+
+For Node.js-only projects, consider looking into these C extensions:
+
+- [bignum](https://github.com/justmoon/node-bignum)
+- [bigint](https://github.com/substack/node-bigint)
+
+
+Example
+-------
+
+```js
+> var bigint = require('bigintjs');
+
+> bigint('99999999999999999999999999999').add('1').toString();
+'100000000000000000000000000000'
+
+> bigint('123456789012345678901234567890').multiply('98765432109876543210987654321').toString();
+'12193263113702179522618503273362292333223746380111126352690'
+
+> // Bitwise operations on a big number (JavaScript only supports up to 32 bits)
+> bigint('0xFFFFFFFFFFFFFFFF').and('0xF0F0F0F0F0F0F0F0').shiftLeft(8).toString();
+'4444580219171430789120'
+```
 
 
 This project is in an early state
@@ -18,20 +42,6 @@ Some basic operations are still missing. Most notably:
 - Square root
 
 Feel free to submit a pull request for any of the above.
-
-
-Example
--------
-
-```js
-var bigint = require('bigintjs');
-
-console.log(bigint('99999999999999999999999999999').add('1').toString());
-// 100000000000000000000000000000
-
-// Bitwise operations on a big number (JavaScript only supports up to 32 bits)
-var value = bigint('0xFFFFFFFFFFFFFFFF').and('0xF0F0F0F0F0F0F0F0').shiftLeft(8);
-```
 
 
 Using this package
