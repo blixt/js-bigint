@@ -13,7 +13,22 @@
     "url": "https://github.com/blixt/js-bigint.git"
   },
   "scripts": {
-    "test": "vows test/* --spec"
+    "test": "vows test/*.js --spec"
+  },
+  "testling": {
+    "files": "test/*.js",
+    "browsers": [
+      "android-browser/4.2..latest",
+      "chrome/22..latest",
+      "chrome/canary",
+      "firefox/17..latest",
+      "firefox/nightly",
+      "ie/8..latest",
+      "ipad/6.0..latest",
+      "iphone/6.0..latest",
+      "opera/12..latest",
+      "safari/5.1..latest"
+    ]
   },
   "devDependencies": {
     "assert": "^1.1.1",
