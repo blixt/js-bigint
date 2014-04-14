@@ -6,7 +6,9 @@ JavaScript's `Number` type can accurately represent).
 
 This is a pure JavaScript library, unlike other libraries that do the
 same thing. The main benefit of being pure JavaScript is that you can
-use it in a browser environment.
+use it in a browser environment:
+
+![Browser compatibility](https://ci.testling.com/blixt/js-bigint.png)
 
 For Node.js-only projects, consider looking into these C extensions:
 
