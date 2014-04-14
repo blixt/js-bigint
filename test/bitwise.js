@@ -1,68 +1,63 @@
-var assert = require('assert'),
-    vows = require('vows');
+var test = require('tape');
 
 var BigInt = require('../');
 
-vows.describe('bitwise').addBatch({
-  'and': {
-    topic: new BigInt(0xF0F0F0F0),
+test('bitwise and', function (t) {
+  var big = new BigInt(0xF0F0F0F0);
 
-    'with bigger bitmask': function (big) {
-      assert.strictEqual(+big.and(0xAAAAAAAAAAAA), 0xA0A0A0A0);
-    },
+  // with bigger bitmask
+  t.equal(+big.and(0xAAAAAAAAAAAA), 0xA0A0A0A0);
 
-    'with equal size bitmask': function (big) {
-      assert.strictEqual(+big.and(0xAAAAAAAA), 0xA0A0A0A0);
-    },
+  // with equal size bitmask
+  t.equal(+big.and(0xAAAAAAAA), 0xA0A0A0A0);
 
-    'with smaller bitmask': function (big) {
-      assert.strictEqual(+big.and(0xAA), 0xA0);
-    }
-  },
+  // with smaller bitmask
+  t.equal(+big.and(0xAA), 0xA0);
 
-  'or': {
-    topic: new BigInt('0x1100011'),
+  t.end();
+});
 
-    'with bigger bitmask': function (big) {
-      assert.strictEqual(big.or('0xA0A0A0A0A0A0A0A').toString(), '723401728398592539');
-    },
+test('bitwise or', function (t) {
+  var big = new BigInt('0x1100011');
 
-    'with equal size bitmask': function (big) {
-      assert.strictEqual(+big.or('0x1234321'), 20136753);
-    },
+  // with bigger bitmask
+  t.equal(big.or('0xA0A0A0A0A0A0A0A').toString(), '723401728398592539');
 
-    'with smaller bitmask': function (big) {
-      assert.strictEqual(+big.or('0xAB'), 17825979);
-    }
-  },
+  // with equal size bitmask
+  t.equal(+big.or('0x1234321'), 20136753);
 
-  'shift': {
-    topic: new BigInt(0xDDCCBBAA),
+  // with smaller bitmask
+  t.equal(+big.or('0xAB'), 17825979);
 
-    'left': function (big) {
-      assert.strictEqual(+big.shiftLeft(8), 0xDDCCBBAA00);
-      // Corner case where value fits perfectly in one value before shift.
-      assert.strictEqual(+new BigInt(32767).shiftLeft(1), 65534);
-    },
+  t.end();
+});
 
-    'right': function (big) {
-      assert.strictEqual(+big.shiftRight(8), 0xDDCCBB);
-    }
-  },
+test('bitwise shift', function (t) {
+  var big = new BigInt(0xDDCCBBAA);
 
-  'xor': {
-    topic: new BigInt('0x1100011'),
+  // left
+  t.equal(+big.shiftLeft(8), 0xDDCCBBAA00);
 
-    'with bigger bitmask': function (big) {
-      assert.strictEqual(big.xor('0xABABABABABABABA').toString(), '773135597222673067');
-    },
+  // Corner case where value fits perfectly in one value before shift.
+  t.equal(+new BigInt(32767).shiftLeft(1), 65534);
 
-    'with equal size bitmask': function (big) {
-      assert.strictEqual(+big.xor('0x1234321'), 3359536);
-    },
+  // right
+  t.equal(+big.shiftRight(8), 0xDDCCBB);
 
-    'with smaller bitmask': function (big) {
-      assert.strictEqual(+big.xor('0xAB'), 17825978);
-    }
-  }
-}).export(module);
+  t.end();
+});
+
+test('bitwise xor', function (t) {
+  var big = new BigInt('0x1100011');
+
+  // with bigger bitmask
+  t.equal(big.xor('0xABABABABABABABA').toString(), '773135597222673067');
+
+  // with equal size bitmask
+  t.equal(+big.xor('0x1234321'), 3359536);
+
+  // with smaller bitmask
+  t.equal(+big.xor('0xAB'), 17825978);
+
+  t.end();
+});

@@ -13,7 +13,7 @@
     "url": "https://github.com/blixt/js-bigint.git"
   },
   "scripts": {
-    "test": "vows test/*.js --spec"
+    "test": "tap test/*.js"
   },
   "testling": {
     "files": "test/*.js",
@@ -31,8 +31,8 @@
     ]
   },
   "devDependencies": {
-    "assert": "^1.1.1",
     "benchmark": "^1.0.0",
-    "vows": "~0.7.0"
+    "tap": "^0.4.8",
+    "tape": "^2.12.3"
   }
 }
